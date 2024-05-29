@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace  Beedelivery\RD\Commands;
 
 use BeeDelivery\RD\Utils\Helpers;
 use Exception;
