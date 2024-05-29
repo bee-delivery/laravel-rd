@@ -1,11 +1,11 @@
 <?php
 
-namespace Beedelivery\RaiaDrograsil;
+namespace Beedelivery\RD;
 
 use App\Console\Commands\PullFromPubSubRD;
 use Illuminate\Support\ServiceProvider;
 
-class RaiaDrograsilServiceProvider extends ServiceProvider
+class RDServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -22,7 +22,7 @@ class RaiaDrograsilServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/raiadrograsil.php' => config_path('raiadrograsil.php'),
+                __DIR__.'/../config/rd.php' => config_path('rd.php'),
             ], 'config');
 
             // Publishing the views.
@@ -53,11 +53,11 @@ class RaiaDrograsilServiceProvider extends ServiceProvider
     public function register()
     {
         // Automatically apply the package configuration
-        $this->mergeConfigFrom(__DIR__.'/../config/raiadrograsil.php', 'raiadrograsil');
+        $this->mergeConfigFrom(__DIR__.'/../config/rd.php', 'rd');
 
         // Register the main class to use with the facade
-        $this->app->singleton('raiadrograsil', function () {
-            return new RaiaDrograsil;
+        $this->app->singleton('rd', function () {
+            return new RD;
         });
     }
 }

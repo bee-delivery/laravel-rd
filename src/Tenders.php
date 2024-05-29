@@ -1,9 +1,9 @@
 <?php
 
-namespace BeeDelivery\RaiaDrograsil;
+namespace BeeDelivery\RD;
 
-use BeeDelivery\RaiaDrograsil\Utils\Helpers;
-use BeeDelivery\RaiaDrograsil\Utils\TenderEnumRD;
+use BeeDelivery\RD\Utils\Helpers;
+use BeeDelivery\RD\Utils\TenderEnumRD;
 use Google\Cloud\PubSub\MessageBuilder;
 
 class Tenders
@@ -28,7 +28,7 @@ class Tenders
     private function tender($messageData)
     {
         try {
-            $topic = $this->pubsub->topic(config('raiadrogasil.tender_response'));
+            $topic = $this->pubsub->topic(config('rd.tender_response'));
             return $topic->publish((new MessageBuilder)->setData(json_encode($messageData))->build());
         } catch (\Exception $exception) {
             throw new \Exception($exception->getMessage());
@@ -41,7 +41,7 @@ class Tenders
             'Metadata' => [
                 'RouterMessageType' => 'CARRIER_TENDER_RESPONSE',
                 'ActionType' => 'TENDER_ACCEPT',
-                'PartnerId' => 'raiassf11o:RD-RaiaDrogasil-SA',
+                'PartnerId' => config('rd.partner_id'),
                 'SenderRouterOrgId' => 'mxcassf11o:' . $this->data->CarrierId,
                 'PartnerAliasId' => $this->data->CarrierId,
             ],
@@ -58,13 +58,13 @@ class Tenders
         return $this->tender($tender);
     }
 
-    public function declinedForaDeAbrangencia()
+    public function declinedOutOfCoverage()
     {
         $tender = [
             'Metadata' => [
                 'RouterMessageType' => 'CARRIER_TENDER_RESPONSE',
                 'ActionType' => 'TENDER_DECLINE',
-                'PartnerId' => 'raiassf11o:RD-RaiaDrogasil-SA',
+                'PartnerId' => config('rd.partner_id'),
                 'SenderRouterOrgId' => 'mxcassf11o:' . $this->data->CarrierId,
                 'PartnerAliasId' => $this->data->CarrierId,
             ],
@@ -72,7 +72,7 @@ class Tenders
                 'ShipmentId' => $this->data->ShipmentId,
                 'ShipperId' => $this->data->ShipperId,
                 'CarrierId' => $this->data->CarrierId,
-                'ReasonCode' => TenderEnumRD::FORA_DE_ABRANGENCIA,
+                'ReasonCode' => TenderEnumRD::OUT_OF_COVERAGE,
                 'ReasonMessage' => 'Fora de abrangência',
                 'TenderResponseStatus' => 'DECLINED',
             ],
@@ -81,13 +81,13 @@ class Tenders
         return $this->tender($tender);
     }
 
-    public function declinedFilialNaoCadastrada()
+    public function declinedUnregistredBranch()
     {
         $tender = [
             'Metadata' => [
                 'RouterMessageType' => 'CARRIER_TENDER_RESPONSE',
                 'ActionType' => 'TENDER_DECLINE',
-                'PartnerId' => 'raiassf11o:RD-RaiaDrogasil-SA',
+                'PartnerId' => config('rd.partner_id'),
                 'SenderRouterOrgId' => 'mxcassf11o:' . $this->data->CarrierId,
                 'PartnerAliasId' => $this->data->CarrierId,
             ],
@@ -95,7 +95,7 @@ class Tenders
                 'ShipmentId' => $this->data->ShipmentId,
                 'ShipperId' => $this->data->ShipperId,
                 'CarrierId' => $this->data->CarrierId,
-                'ReasonCode' => TenderEnumRD::FILIAL_NAO_CADASTRADA,
+                'ReasonCode' => TenderEnumRD::UNREGISTERED_BRANCH,
                 'ReasonMessage' => 'Filial não cadastrada',
                 'TenderResponseStatus' => 'DECLINED',
             ],
@@ -104,13 +104,13 @@ class Tenders
         return $this->tender($tender);
     }
 
-    public function declinedSemEntregadorNaRegiao()
+    public function declinedNoDelivererInRegion()
     {
         $tender = [
             'Metadata' => [
                 'RouterMessageType' => 'CARRIER_TENDER_RESPONSE',
                 'ActionType' => 'TENDER_DECLINE',
-                'PartnerId' => 'raiassf11o:RD-RaiaDrogasil-SA',
+                'PartnerId' => config('rd.partner_id'),
                 'SenderRouterOrgId' => 'mxcassf11o:' . $this->data->CarrierId,
                 'PartnerAliasId' => $this->data->CarrierId,
             ],
@@ -118,7 +118,7 @@ class Tenders
                 'ShipmentId' => $this->data->ShipmentId,
                 'ShipperId' => $this->data->ShipperId,
                 'CarrierId' => $this->data->CarrierId,
-                'ReasonCode' => TenderEnumRD::SEM_ENTREGADOR_NA_REGIAO,
+                'ReasonCode' => TenderEnumRD::NO_DELIVERER_IN_REGION,
                 'ReasonMessage' => 'Sem entregador na região',
                 'TenderResponseStatus' => 'DECLINED',
             ],
@@ -127,13 +127,13 @@ class Tenders
         return $this->tender($tender);
     }
 
-    public function declinedAreaDeRisco()
+    public function declinedRiskArea()
     {
         $tender = [
             'Metadata' => [
                 'RouterMessageType' => 'CARRIER_TENDER_RESPONSE',
                 'ActionType' => 'TENDER_DECLINE',
-                'PartnerId' => 'raiassf11o:RD-RaiaDrogasil-SA',
+                'PartnerId' => config('rd.partner_id'),
                 'SenderRouterOrgId' => 'mxcassf11o:' . $this->data->CarrierId,
                 'PartnerAliasId' => $this->data->CarrierId,
             ],
@@ -141,7 +141,7 @@ class Tenders
                 'ShipmentId' => $this->data->ShipmentId,
                 'ShipperId' => $this->data->ShipperId,
                 'CarrierId' => $this->data->CarrierId,
-                'ReasonCode' => TenderEnumRD::AREA_DE_RISCO,
+                'ReasonCode' => TenderEnumRD::RISK_AREA,
                 'ReasonMessage' => 'Área de risco',
                 'TenderResponseStatus' => 'DECLINED',
             ],
@@ -150,13 +150,13 @@ class Tenders
         return $this->tender($tender);
     }
 
-    public function declinedFalhaAoGeolocalizarDestino()
+    public function declinedFailedToGeolocateDestination()
     {
         $tender = [
             'Metadata' => [
                 'RouterMessageType' => 'CARRIER_TENDER_RESPONSE',
                 'ActionType' => 'TENDER_DECLINE',
-                'PartnerId' => 'raiassf11o:RD-RaiaDrogasil-SA',
+                'PartnerId' => config('rd.partner_id'),
                 'SenderRouterOrgId' => 'mxcassf11o:' . $this->data->CarrierId,
                 'PartnerAliasId' => $this->data->CarrierId,
             ],
@@ -164,7 +164,7 @@ class Tenders
                 'ShipmentId' => $this->data->ShipmentId,
                 'ShipperId' => $this->data->ShipperId,
                 'CarrierId' => $this->data->CarrierId,
-                'ReasonCode' => TenderEnumRD::FALHA_AO_GEOLOCALIZAR_DESTINO,
+                'ReasonCode' => TenderEnumRD::FAILED_TO_GEOLOCATE_DESTINATION,
                 'ReasonMessage' => 'Falha ao geolocalizar destino',
                 'TenderResponseStatus' => 'DECLINED',
             ],

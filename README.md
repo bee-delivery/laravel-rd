@@ -17,13 +17,8 @@ composer require beedelivery/laravel-rd
 ## Usage
 
 ```php
-// Usage description here
-```
+You have to create a config file in your project to pass the variables. After that you can define in your Kernel.php the command that pull from PubSub.
 
-### Testing
-
-```bash
-composer test
 ```
 
 ### Changelog

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use BeeDelivery\RaiaDrograsil\Utils\Helpers;
+use BeeDelivery\RD\Utils\Helpers;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -17,14 +17,14 @@ class PullFromPubSubRD extends Command
      *
      * @var string
      */
-    protected $signature = 'pulling:tms-raia-drogasil';
+    protected $signature = 'pulling:tms-rd';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Verificar lotes de entregas na Raia Drogasil via TMS';
+    protected $description = 'Verificar lotes de entregas na RD via TMS';
 
     private $client;
 
@@ -39,7 +39,7 @@ class PullFromPubSubRD extends Command
     {
         parent::__construct();
         $this->client = $this->connectionSNS();
-        $this->topicArnF3 = config('raiadrogasil.aws_arn_sns');
+        $this->topicArnF3 = config('rd.aws_arn_sns');
     }
 
     /**
@@ -54,7 +54,7 @@ class PullFromPubSubRD extends Command
         $pubSub = $this->pubSubGoogle();
 
         // Faz a inscrição no canal TMS
-        $subscription = $pubSub->subscription(config('raiadrogasil.outbound_tender'));
+        $subscription = $pubSub->subscription(config('rd.outbound_tender'));
         $beginHour = now();
         do {
             $messages = $subscription->pull();
@@ -70,12 +70,13 @@ class PullFromPubSubRD extends Command
                         $subscription->acknowledge($message);
                     } else {
                         $subscription->acknowledge($message);
-                        Redis::hset('pedido-recebido-com-erro-rd', now()->format('d/m/Y H:i:s'), json_encode(['data' => $pedidoDecorator]));
+                        Redis::hset(config('rd.redis_error_key_shipment'), now()->format('d/m/Y H:i:s'), json_encode(['data' => $pedidoDecorator]));
+                        Redis::expire(config('rd.redis_error_key_shipment'), 432000); // 5 dias
                     }
                 } catch (Exception $exception) {
-                    Log::channel('rd_tms_responses')->info(json_encode([
-                        'msg' => 'Catch para o PullTmsRaiaDrogasil',
-                        'class' => 'PullTmsRaiaDrogasil',
+                    Log::channel(config('rd.log_pull_tms'))->info(json_encode([
+                        'msg' => 'Catch para o PullTmsRD',
+                        'class' => 'PullFromPubSubRD',
                         'line' => $exception->getLine(),
                         'message' => $exception->getMessage(),
                         'exception' => json_encode($exception),
@@ -90,12 +91,12 @@ class PullFromPubSubRD extends Command
 
     private function putOrderOnRedis($orderId, $data)
     {
-        Redis::hset('pedido-recebido-rd-' . $orderId, now()->format('d/m/Y H:i:s'), json_encode(['address' => $data->Stop[1]]));
-        Redis::expire('pedido-recebido-rd-' . $orderId, 864000); // 10 dias
-        Log::channel('pull_tms_send_aws')->info(json_encode([
+        Redis::hset(config('rd.redis_key_shipment') . $orderId, now()->format('d/m/Y H:i:s'), json_encode(['address' => $data->Stop[1]]));
+        Redis::expire(config('rd.redis_key_shipment') . $orderId, 864000); // 10 dias
+        Log::channel(config('rd.log_pull_tms'))->info(json_encode([
             'msg' => 'PEDIDO RECEBIDO: ' . $orderId,
             'hora' => now()->format('d/m/Y H:i:s'),
-            'class' => 'PullTmsRaiaDrogasil',
+            'class' => 'PullFromPubSubRD',
         ]));
     }
 

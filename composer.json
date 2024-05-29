@@ -27,7 +27,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Beedelivery\\RaiaDrograsil\\": "src"
+            "Beedelivery\\RD\\": "src"
         }
     },
     "config": {
@@ -36,10 +36,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Beedelivery\\RaiaDrograsil\\RaiaDrograsilServiceProvider"
+                "Beedelivery\\RD\\RDServiceProvider"
             ],
             "aliases": {
-                "RaiaDrograsil": "Beedelivery\\RaiaDrograsil\\RaiaDrograsilFacade"
+                "RD": "Beedelivery\\RD\\RDFacade"
             }
         }
     }

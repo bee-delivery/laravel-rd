@@ -1,10 +1,13 @@
 <?php
 
-namespace BeeDelivery\RaiaDrograsil\Facades;
+namespace Beedelivery\RD;
 
 use Illuminate\Support\Facades\Facade;
 
-class RaiaDrogasil extends Facade
+/**
+ * @see \Beedelivery\RD\Skeleton\SkeletonClass
+ */
+class RDFacade extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -13,6 +16,6 @@ class RaiaDrogasil extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'raiadrogasil';
+        return 'rd';
     }
 }

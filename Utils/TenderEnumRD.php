@@ -1,12 +1,12 @@
 <?php
 
-namespace BeeDelivery\RaiaDrograsil\Utils;
+namespace BeeDelivery\RD\Utils;
 
 class TenderEnumRD
 {
-    public const FORA_DE_ABRANGENCIA = '01';
-    public const FILIAL_NAO_CADASTRADA = '02';
-    public const SEM_ENTREGADOR_NA_REGIAO = '03';
-    public const AREA_DE_RISCO = '04';
-    public const FALHA_AO_GEOLOCALIZAR_DESTINO = '05';
+    public const OUT_OF_COVERAGE = '01';
+    public const UNREGISTERED_BRANCH = '02';
+    public const NO_DELIVERER_IN_REGION = '03';
+    public const RISK_AREA = '04';
+    public const FAILED_TO_GEOLOCATE_DESTINATION = '05';
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace BeeDelivery\RaiaDrograsil;
+namespace BeeDelivery\RD;
 
-use BeeDelivery\RaiaDrograsil\Utils\Helpers;
-use BeeDelivery\RaiaDrograsil\Utils\MessageTypeRD;
-use BeeDelivery\RaiaDrograsil\Utils\StopSeqRD;
-use BeeDelivery\RaiaDrograsil\Utils\TrackingEnumRD;
+use BeeDelivery\RD\Utils\Helpers;
+use BeeDelivery\RD\Utils\MessageTypeRD;
+use BeeDelivery\RD\Utils\StopSeqRD;
+use BeeDelivery\RD\Utils\TrackingEnumRD;
 use Google\Cloud\PubSub\MessageBuilder;
 
 class Trackings
@@ -21,7 +21,7 @@ class Trackings
      *
      * @return void
      */
-    public function __construct($informacoesPedido) 
+    public function __construct($informacoesPedido)
     {
         $this->pubsub = $this->pubSubGoogle();
         $this->baseTracking = $this->prepareBaseTracking($informacoesPedido);
@@ -30,7 +30,7 @@ class Trackings
     private function tracking($messageData)
     {
         try {
-            $topic = $this->pubsub->topic(config('raiadrogasil.outbound_tender'));
+            $topic = $this->pubsub->topic(config('rd.outbound_tender'));
             return $topic->publish((new MessageBuilder)->setData(json_encode($messageData))->build());
         } catch (\Exception $exception) {
             throw new \Exception($exception->getMessage());
@@ -65,116 +65,118 @@ class Trackings
         ];
     }
 
-    public function integrado($deliveryManTracking)
+    public function integrated($deliveryManTracking)
     {
         $messageData = [
             'MessageComments' => $deliveryManTracking,
             'MessageName' => 'Integrado',
-            'MessageType' => MessageTypeRD::INTEGRADO,
-            'StopSeq' => StopSeqRD::INTEGRADO,
-            'TrackingReasonCodeId' => TrackingEnumRD::INTEGRADO,
+            'MessageType' => MessageTypeRD::INTEGRATED,
+            'StopSeq' => StopSeqRD::INTEGRATED,
+            'TrackingReasonCodeId' => TrackingEnumRD::INTEGRATED,
         ];
 
         return $this->tracking(array_merge($this->baseTracking, $messageData));
     }
 
-    public function cotacao($deliveryPrice)
+    public function quotation($deliveryPrice)
     {
         $messageData = [
             'MessageComments' => $deliveryPrice,
             'MessageName' => 'Preço da entrega',
-            'MessageType' => MessageTypeRD::COTACAO,
-            'StopSeq' => StopSeqRD::COTACAO,
-            'TrackingReasonCodeId' => TrackingEnumRD::COTACAO,
+            'MessageType' => MessageTypeRD::QUOTATION,
+            'StopSeq' => StopSeqRD::QUOTATION,
+            'TrackingReasonCodeId' => TrackingEnumRD::QUOTATION,
         ];
 
         return $this->tracking(array_merge($this->baseTracking, $messageData));
     }
 
-    public function emRotaDeColeta()
+    public function onPickupRoute()
     {
         $messageData = [
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
             'MessageName' => 'Em rota de coleta',
-            'MessageType' => MessageTypeRD::EM_ROTA_DE_COLETA,
-            'StopSeq' => StopSeqRD::EM_ROTA_DE_COLETA,
-            'TrackingReasonCodeId' => TrackingEnumRD::EM_ROTA_DE_COLETA,
+            'MessageType' => MessageTypeRD::ON_PICKUP_ROUTE,
+            'StopSeq' => StopSeqRD::ON_PICKUP_ROUTE,
+            'TrackingReasonCodeId' => TrackingEnumRD::ON_PICKUP_ROUTE,
         ];
 
         return $this->tracking(array_merge($this->baseTracking, $messageData));
     }
 
-    public function chegadaNoPontoDeColeta()
+    public function arrivalAtPickup()
     {
         $messageData = [
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
             'MessageName' => 'Chegada no ponto de coleta',
-            'MessageType' => MessageTypeRD::CHEGADA_NA_COLETA,
-            'StopSeq' => StopSeqRD::CHEGADA_NA_COLETA,
-            'TrackingReasonCodeId' => TrackingEnumRD::CHEGADA_NA_COLETA,
+            'MessageType' => MessageTypeRD::ARRIVAL_AT_PICKUP,
+            'StopSeq' => StopSeqRD::ARRIVAL_AT_PICKUP,
+            'TrackingReasonCodeId' => TrackingEnumRD::ARRIVAL_AT_PICKUP,
         ];
 
         return $this->tracking(array_merge($this->baseTracking, $messageData));
     }
 
-    public function despachado()
+    public function dispatched()
     {
         $messageData = [
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
             'MessageName' => 'Despachado',
-            'MessageType' => MessageTypeRD::DESPACHADO,
-            'StopSeq' => StopSeqRD::DESPACHADO,
-            'TrackingReasonCodeId' => TrackingEnumRD::DESPACHADO,
+            'MessageType' => MessageTypeRD::DISPATCHED,
+            'StopSeq' => StopSeqRD::DISPATCHED,
+            'TrackingReasonCodeId' => TrackingEnumRD::DISPATCHED,
         ];
 
         return $this->tracking(array_merge($this->baseTracking, $messageData));
     }
 
-    public function chegadaNaEntrega()
+    public function arrivalAtDelivery()
     {
         $messageData = [
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
             'MessageName' => 'Chegada no destino do cliente',
-            'MessageType' => MessageTypeRD::CHEGADA_NA_ENTREGA,
-            'StopSeq' => StopSeqRD::CHEGADA_NA_ENTREGA,
-            'TrackingReasonCodeId' => TrackingEnumRD::CHEGADA_NA_ENTREGA,
+            'MessageType' => MessageTypeRD::ARRIVAL_AT_DELIVERY,
+            'StopSeq' => StopSeqRD::ARRIVAL_AT_DELIVERY,
+            'TrackingReasonCodeId' => TrackingEnumRD::ARRIVAL_AT_DELIVERY,
         ];
 
         return $this->tracking(array_merge($this->baseTracking, $messageData));
     }
 
-    public function entregaRealizada() {
+    public function successulDelivery()
+    {
         $messageData = [
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
             'MessageName' => 'Entrega realizada com sucesso',
-            'MessageType' => MessageTypeRD::ENTREGA_REALIZADA_COM_SUCESSO,
-            'StopSeq' => StopSeqRD::ENTREGA_REALIZADA_COM_SUCESSO,
-            'TrackingReasonCodeId' => TrackingEnumRD::ENTREGA_REALIZADA_COM_SUCESSO,
+            'MessageType' => MessageTypeRD::SUCCESSFUL_DELIVERY,
+            'StopSeq' => StopSeqRD::SUCCESSFUL_DELIVERY,
+            'TrackingReasonCodeId' => TrackingEnumRD::SUCCESSFUL_DELIVERY,
         ];
 
         return $this->tracking(array_merge($this->baseTracking, $messageData));
     }
 
-    public function entregaCancelada($motivo)
+    public function canceledDelivery($reasson)
     {
         $messageData = [
-            'MessageComments' => $motivo,
-            'MessageName' => 'Entrega cancelada - '. $motivo,
-            'MessageType' => MessageTypeRD::ENTREGA_CANCELADA,
-            'StopSeq' => StopSeqRD::ENTREGA_CANCELADA,
-            'TrackingReasonCodeId' => TrackingEnumRD::ENTREGA_CANCELADA,
+            'MessageComments' => $reasson,
+            'MessageName' => 'Entrega cancelada - ' . $reasson,
+            'MessageType' => MessageTypeRD::CANCELED_DELIVERY,
+            'StopSeq' => StopSeqRD::CANCELED_DELIVERY,
+            'TrackingReasonCodeId' => TrackingEnumRD::CANCELED_DELIVERY,
         ];
 
         return $this->tracking(array_merge($this->baseTracking, $messageData));
     }
 
-    public function devolvido($motivo) {
+    public function returned($reasson)
+    {
         $messageData = [
-            'MessageComments' => $motivo,
-            'MessageName' => 'Pedido devolvido em loja - ' . $motivo,
-            'MessageType' => MessageTypeRD::DEVOLVIDO,
-            'StopSeq' => StopSeqRD::DEVOLVIDO,
-            'TrackingReasonCodeId' => TrackingEnumRD::DEVOLVIDO,
+            'MessageComments' => $reasson,
+            'MessageName' => 'Pedido devolvido em loja - ' . $reasson,
+            'MessageType' => MessageTypeRD::RETURNED,
+            'StopSeq' => StopSeqRD::RETURNED,
+            'TrackingReasonCodeId' => TrackingEnumRD::RETURNED,
         ];
 
         return $this->tracking(array_merge($this->baseTracking, $messageData));
