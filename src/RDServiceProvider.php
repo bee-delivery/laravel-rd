@@ -2,7 +2,7 @@
 
 namespace Beedelivery\RD;
 
-use App\Console\Commands\PullFromPubSubRD;
+use Beedelivery\RD\Commands\PullFromPubSubRD;
 use Illuminate\Support\ServiceProvider;
 
 class RDServiceProvider extends ServiceProvider
