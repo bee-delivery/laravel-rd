@@ -26,7 +26,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Beedelivery\\RD\\": "src"
+            "Beedelivery\\RD\\": "src/"
         }
     },
     "config": {
@@ -38,7 +38,7 @@
                 "Beedelivery\\RD\\RDServiceProvider"
             ],
             "aliases": {
-                "RD": "Beedelivery\\RD\\RDFacade"
+                "RD": "Beedelivery\\RD\\RDFacade\\RD"
             }
         }
     }
