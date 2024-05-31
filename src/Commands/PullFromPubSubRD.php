@@ -2,12 +2,12 @@
 
 namespace  Beedelivery\RD\Commands;
 
-use BeeDelivery\RD\Utils\Helpers;
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
+use BeeDelivery\RD\Utils\Helpers;
 
 class PullFromPubSubRD extends Command
 {
@@ -24,7 +24,7 @@ class PullFromPubSubRD extends Command
      *
      * @var string
      */
-    protected $description = 'Verificar lotes de entregas na RD via TMS';
+    protected $description = 'Check delivery batches in RD via TMS';
 
     private $client;
 
