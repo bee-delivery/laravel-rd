@@ -2,6 +2,7 @@
 
 namespace BeeDelivery\RD\Utils;
 
+use Aws\Credentials\Credentials;
 use Google\Cloud\PubSub\PubSubClient;
 
 trait Helpers
@@ -11,10 +12,10 @@ trait Helpers
         return new \Aws\Sns\SnsClient([
             'version' => 'latest',
             'region' => config('rd.aws_region'),
-            'credentials' => [
-                'key' => config('rd.aws_access_key_id'),
-                'secret' => config('rd.aws_secret_access_key')
-            ]
+            'credentials' => new Credentials(
+                config('rd.aws_access_key_id'),
+                config('rd.aws_secret_access_key')
+            )
         ]);
     }
 
