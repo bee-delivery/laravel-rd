@@ -28,7 +28,7 @@ class Tenders
     private function tender($messageData)
     {
         try {
-            $topic = $this->pubsub->topic(config('rd.tender_response'));
+            $topic = $this->pubsub->topic(config('rd.inbound_tender_response'));
             return $topic->publish((new MessageBuilder)->setData(json_encode($messageData))->build());
         } catch (\Exception $exception) {
             throw new \Exception($exception->getMessage());

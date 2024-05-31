@@ -30,7 +30,7 @@ class Trackings
     private function tracking($messageData)
     {
         try {
-            $topic = $this->pubsub->topic(config('rd.outbound_tender'));
+            $topic = $this->pubsub->topic(config('rd.inbound_tracking_response'));
             return $topic->publish((new MessageBuilder)->setData(json_encode($messageData))->build());
         } catch (\Exception $exception) {
             throw new \Exception($exception->getMessage());
