@@ -1,8 +1,8 @@
 <?php
 
-namespace Beedelivery\RD;
+namespace BeeDelivery\RD;
 
-use Beedelivery\RD\Commands\PullFromPubSubRD;
+use BeeDelivery\RD\Commands\PullFromPubSubRD;
 use Illuminate\Support\ServiceProvider;
 
 class RDServiceProvider extends ServiceProvider

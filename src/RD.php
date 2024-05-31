@@ -1,6 +1,6 @@
 <?php
 
-namespace Beedelivery\RD;
+namespace BeeDelivery\RD;
 
 class RD
 {

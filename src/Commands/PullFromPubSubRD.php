@@ -1,6 +1,6 @@
 <?php
 
-namespace  Beedelivery\RD\Commands;
+namespace  BeeDelivery\RD\Commands;
 
 use Exception;
 use Illuminate\Console\Command;

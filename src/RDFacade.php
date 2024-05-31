@@ -1,11 +1,11 @@
 <?php
 
-namespace Beedelivery\RD;
+namespace BeeDelivery\RD;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Beedelivery\RD\Skeleton\SkeletonClass
+ * @see \BeeDelivery\RD\Skeleton\SkeletonClass
  */
 class RDFacade extends Facade
 {
