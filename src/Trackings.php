@@ -21,10 +21,10 @@ class Trackings
      *
      * @return void
      */
-    public function __construct($informacoesPedido)
+    public function __construct($data)
     {
         $this->pubsub = $this->pubSubGoogle();
-        $this->baseTracking = $this->prepareBaseTracking($informacoesPedido);
+        $this->baseTracking = $this->prepareBaseTracking($data);
     }
 
     private function tracking($messageData)
@@ -37,30 +37,30 @@ class Trackings
         }
     }
 
-    private function prepareBaseTracking($informacoesPedido)
+    private function prepareBaseTracking($data)
     {
         return [
-            'Address1' => $informacoesPedido->Stop[1]->FacilityAddress->Address1 ?? null,
-            'Address2' => $informacoesPedido->Stop[1]->FacilityAddress->Address2 ?? null,
+            'Address1' => $data->Stop[1]->FacilityAddress->Address1 ?? null,
+            'Address2' => $data->Stop[1]->FacilityAddress->Address2 ?? null,
             'CarrierId' => 'BEE',
-            'City' => $informacoesPedido->Stop[1]->FacilityAddress->City ?? null,
-            'CountryId' => $informacoesPedido->Stop[1]->FacilityAddress->Country ?? null,
-            'Latitude' => $informacoesPedido->Stop[1]->Latitude ?? null,
-            'Longitude' => $informacoesPedido->Stop[1]->Longitude ?? null,
+            'City' => $data->Stop[1]->FacilityAddress->City ?? null,
+            'CountryId' => $data->Stop[1]->FacilityAddress->Country ?? null,
+            'Latitude' => $data->Stop[1]->Latitude ?? null,
+            'Longitude' => $data->Stop[1]->Longitude ?? null,
             'OrgId' => 'RD-RaiaDrogasil-SA',
-            'PostalCode' => $informacoesPedido->Stop[1]->FacilityAddress->PostalCode,
+            'PostalCode' => $data->Stop[1]->FacilityAddress->PostalCode,
             'ReceivedTimeStamp' => now('UTC')->toDateTimeLocalString(),
             'ReceivedTimeZone' => 'Brazil/East',
-            'ShipmentId' => $informacoesPedido->ShipmentId,
+            'ShipmentId' => $data->ShipmentId,
             'SourceType' => 'API',
-            'StateId' => $informacoesPedido->Stop[1]->FacilityAddress->State ?? null,
+            'StateId' => $data->Stop[1]->FacilityAddress->State ?? null,
             'TimeZone' => 'Brazil/East',
             'TrackingEventTimeStamp' => now('UTC')->toDateTimeLocalString(),
-            'TrackingReference' => $informacoesPedido->ShipmentId,
+            'TrackingReference' => $data->ShipmentId,
             'TrackingType' => 'Shipment',
-            'TransportationOrderId' => $informacoesPedido->ShipmentId,
+            'TransportationOrderId' => $data->ShipmentId,
             'Extended' => [
-                'Pedido' => $informacoesPedido->ShipmentId,
+                'Pedido' => $data->ShipmentId,
             ]
         ];
     }

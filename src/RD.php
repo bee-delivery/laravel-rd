@@ -4,5 +4,13 @@ namespace BeeDelivery\RD;
 
 class RD
 {
-    // Build your next great package.
+    public function tenders($data)
+    {
+        return new Tenders($data);
+    }
+
+    public function trackings($data)
+    {
+        return new Trackings($data);
+    }
 }

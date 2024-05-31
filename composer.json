@@ -26,7 +26,8 @@
     },
     "autoload": {
         "psr-4": {
-            "BeeDelivery\\RD\\": "src/"
+            "BeeDelivery\\RD\\": "src/",
+            "BeeDelivery\\RD\\Commands\\": "src/Commands/"
         }
     },
     "config": {
