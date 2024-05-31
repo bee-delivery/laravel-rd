@@ -6,7 +6,7 @@ use Google\Cloud\PubSub\PubSubClient;
 
 trait Helpers
 {
-    function connectionSNS()
+    public function connectionSNS()
     {
         return new \Aws\Sns\SnsClient([
             'version' => 'latest',
@@ -18,7 +18,8 @@ trait Helpers
         ]);
     }
 
-    function pubSubGoogle() {
+    public function pubSubGoogle()
+    {
         return new PubSubClient([
             'keyFile' => json_decode(file_get_contents(config('rd.config_file')), true),
         ]);
