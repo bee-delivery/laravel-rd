@@ -37,7 +37,7 @@ class Tenders
 
     public function accepted()
     {
-        $tender = [
+        $data = [
             'Metadata' => [
                 'RouterMessageType' => 'CARRIER_TENDER_RESPONSE',
                 'ActionType' => 'TENDER_ACCEPT',
@@ -55,12 +55,12 @@ class Tenders
             ],
         ];
 
-        return $this->tender($tender);
+        return ['tender' => $this->tender($data), 'data' => $data];
     }
 
     public function declinedOutOfCoverage()
     {
-        $tender = [
+        $data = [
             'Metadata' => [
                 'RouterMessageType' => 'CARRIER_TENDER_RESPONSE',
                 'ActionType' => 'TENDER_DECLINE',
@@ -78,12 +78,12 @@ class Tenders
             ],
         ];
 
-        return $this->tender($tender);
+        return ['tender' => $this->tender($data), 'data' => $data];
     }
 
     public function declinedUnregistredBranch()
     {
-        $tender = [
+        $data = [
             'Metadata' => [
                 'RouterMessageType' => 'CARRIER_TENDER_RESPONSE',
                 'ActionType' => 'TENDER_DECLINE',
@@ -101,12 +101,12 @@ class Tenders
             ],
         ];
 
-        return $this->tender($tender);
+        return ['tender' => $this->tender($data), 'data' => $data];
     }
 
     public function declinedNoDelivererInRegion()
     {
-        $tender = [
+        $data = [
             'Metadata' => [
                 'RouterMessageType' => 'CARRIER_TENDER_RESPONSE',
                 'ActionType' => 'TENDER_DECLINE',
@@ -124,12 +124,12 @@ class Tenders
             ],
         ];
 
-        return $this->tender($tender);
+        return ['tender' => $this->tender($data), 'data' => $data];
     }
 
     public function declinedRiskArea()
     {
-        $tender = [
+        $data = [
             'Metadata' => [
                 'RouterMessageType' => 'CARRIER_TENDER_RESPONSE',
                 'ActionType' => 'TENDER_DECLINE',
@@ -147,12 +147,12 @@ class Tenders
             ],
         ];
 
-        return $this->tender($tender);
+        return ['tender' => $this->tender($data), 'data' => $data];
     }
 
     public function declinedFailedToGeolocateDestination()
     {
-        $tender = [
+        $data = [
             'Metadata' => [
                 'RouterMessageType' => 'CARRIER_TENDER_RESPONSE',
                 'ActionType' => 'TENDER_DECLINE',
@@ -170,6 +170,6 @@ class Tenders
             ],
         ];
 
-        return $this->tender($tender);
+        return ['tender' => $this->tender($data), 'data' => $data];
     }
 }

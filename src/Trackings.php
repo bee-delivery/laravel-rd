@@ -74,8 +74,8 @@ class Trackings
             'StopSeq' => StopSeqRD::INTEGRATED,
             'TrackingReasonCodeId' => TrackingEnumRD::INTEGRATED,
         ];
-
-        return $this->tracking(array_merge($this->baseTracking, $messageData));
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
     public function quotation($deliveryPrice)
@@ -88,7 +88,8 @@ class Trackings
             'TrackingReasonCodeId' => TrackingEnumRD::QUOTATION,
         ];
 
-        return $this->tracking(array_merge($this->baseTracking, $messageData));
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
     public function onPickupRoute()
@@ -101,7 +102,8 @@ class Trackings
             'TrackingReasonCodeId' => TrackingEnumRD::ON_PICKUP_ROUTE,
         ];
 
-        return $this->tracking(array_merge($this->baseTracking, $messageData));
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
     public function arrivalAtPickup()
@@ -114,7 +116,8 @@ class Trackings
             'TrackingReasonCodeId' => TrackingEnumRD::ARRIVAL_AT_PICKUP,
         ];
 
-        return $this->tracking(array_merge($this->baseTracking, $messageData));
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
     public function dispatched()
@@ -127,7 +130,8 @@ class Trackings
             'TrackingReasonCodeId' => TrackingEnumRD::DISPATCHED,
         ];
 
-        return $this->tracking(array_merge($this->baseTracking, $messageData));
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
     public function arrivalAtDelivery()
@@ -140,7 +144,8 @@ class Trackings
             'TrackingReasonCodeId' => TrackingEnumRD::ARRIVAL_AT_DELIVERY,
         ];
 
-        return $this->tracking(array_merge($this->baseTracking, $messageData));
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
     public function successulDelivery()
@@ -153,7 +158,8 @@ class Trackings
             'TrackingReasonCodeId' => TrackingEnumRD::SUCCESSFUL_DELIVERY,
         ];
 
-        return $this->tracking(array_merge($this->baseTracking, $messageData));
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
     public function canceledDelivery($reasson)
@@ -166,7 +172,8 @@ class Trackings
             'TrackingReasonCodeId' => TrackingEnumRD::CANCELED_DELIVERY,
         ];
 
-        return $this->tracking(array_merge($this->baseTracking, $messageData));
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
     public function returned($reasson)
@@ -179,6 +186,21 @@ class Trackings
             'TrackingReasonCodeId' => TrackingEnumRD::RETURNED,
         ];
 
-        return $this->tracking(array_merge($this->baseTracking, $messageData));
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
+
+    public function reject($reasson)
+    {
+        $messageData = [
+            'MessageComments' => $reasson,
+            'MessageName' => 'Pedido recusado - ' . $reasson,
+            'MessageType' => MessageTypeRD::REJECTED_BY_CARRIER,
+            'StopSeq' => StopSeqRD::REJECTED_BY_CARRIER,
+            'TrackingReasonCodeId' => TrackingEnumRD::REJECTED_BY_CARRIER,
+        ];
+
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 }
