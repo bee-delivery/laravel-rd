@@ -8,7 +8,6 @@ return [
     'aws_region' => env('RD_AWS_REGION'),
     'aws_access_key_id' => env('RD_AWS_ACCESS_KEY_ID'),
     'aws_secret_access_key' => env('RD_AWS_SECRET_ACCESS_KEY'),
-    'aws_sqs_url' => env('RD_AWS_SQS_URL'),
     'config_file' => env('RD_CONFIG_FILE'),
     'outbound_tender' => env('RD_OUTBOUND_TENDER'),
     'inbound_tracking_response' => env('RD_INBOUND_TRACKING_RESPONSE'),
