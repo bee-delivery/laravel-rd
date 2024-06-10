@@ -92,10 +92,10 @@ class Trackings
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
-    public function onPickupRoute()
+    public function onPickupRoute($expectedTime)
     {
         $messageData = [
-            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageComments' => $expectedTime,
             'MessageName' => 'Em rota de coleta',
             'MessageType' => MessageTypeRD::ON_PICKUP_ROUTE,
             'StopSeq' => StopSeqRD::ON_PICKUP_ROUTE,
@@ -120,10 +120,10 @@ class Trackings
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
-    public function dispatched()
+    public function dispatched($expectedTime)
     {
         $messageData = [
-            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageComments' => $expectedTime,
             'MessageName' => 'Despachado',
             'MessageType' => MessageTypeRD::DISPATCHED,
             'StopSeq' => StopSeqRD::DISPATCHED,
