@@ -66,7 +66,7 @@ class PullFromPubSubRD extends Command
                     // array para decorator com os parametros do pedido RD
                     $pedidoDecorator = json_decode($message->data());
                     if (isset($pedidoDecorator->TenderStatus) and $this->putInF3Queue($message->data())) {
-                        $this->putOrderOnRedis($pedidoDecorator->ShipmentId, $pedidoDecorator);
+                        $this->putOrderOnRedis($pedidoDecorator->ShipmentId, $pedidoDecorator, $pedidoDecorator->TenderStatus);
                         $subscription->acknowledge($message);
                     } else {
                         $subscription->acknowledge($message);
@@ -89,9 +89,10 @@ class PullFromPubSubRD extends Command
         $this->info('FIM');
     }
 
-    private function putOrderOnRedis($orderId, $data)
+    private function putOrderOnRedis($orderId, $data, $tenderStatus)
     {
-        Redis::hset(config('rd.redis_key_shipment') . $orderId, now()->format('d/m/Y H:i:s'), json_encode(['address' => $data->Stop[1]]));
+        $dataRedis = $tenderStatus == 'Recalled' ? $data : ['address' => $data->Stop[1]];
+        Redis::hset(config('rd.redis_key_shipment') . $orderId, now()->format('d/m/Y H:i:s'), json_encode($dataRedis));
         Redis::expire(config('rd.redis_key_shipment') . $orderId, 864000); // 10 dias
         Log::channel(config('rd.log_pull_tms'))->info(json_encode([
             'msg' => 'PEDIDO RECEBIDO: ' . $orderId,
