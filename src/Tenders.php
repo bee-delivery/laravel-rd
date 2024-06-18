@@ -8,7 +8,7 @@ use Google\Cloud\PubSub\MessageBuilder;
 
 class Tenders
 {
-    use Helpers;
+    use Helpers, TenderEnumRD;
 
     protected $pubsub;
 
@@ -72,7 +72,7 @@ class Tenders
                 'ShipmentId' => $this->data->ShipmentId,
                 'ShipperId' => $this->data->ShipperId,
                 'CarrierId' => $this->data->CarrierId,
-                'ReasonCode' => TenderEnumRD::OUT_OF_COVERAGE,
+                'ReasonCode' => $this::TND_OUT_OF_COVERAGE,
                 'ReasonMessage' => 'Fora de abrangência',
                 'TenderResponseStatus' => 'DECLINED',
             ],
@@ -95,7 +95,7 @@ class Tenders
                 'ShipmentId' => $this->data->ShipmentId,
                 'ShipperId' => $this->data->ShipperId,
                 'CarrierId' => $this->data->CarrierId,
-                'ReasonCode' => TenderEnumRD::UNREGISTERED_BRANCH,
+                'ReasonCode' => $this::TND_UNREGISTERED_BRANCH,
                 'ReasonMessage' => 'Filial não cadastrada',
                 'TenderResponseStatus' => 'DECLINED',
             ],
@@ -118,7 +118,7 @@ class Tenders
                 'ShipmentId' => $this->data->ShipmentId,
                 'ShipperId' => $this->data->ShipperId,
                 'CarrierId' => $this->data->CarrierId,
-                'ReasonCode' => TenderEnumRD::NO_DELIVERER_IN_REGION,
+                'ReasonCode' => $this::TND_NO_DELIVERER_IN_REGION,
                 'ReasonMessage' => 'Sem entregador na região',
                 'TenderResponseStatus' => 'DECLINED',
             ],
@@ -141,7 +141,7 @@ class Tenders
                 'ShipmentId' => $this->data->ShipmentId,
                 'ShipperId' => $this->data->ShipperId,
                 'CarrierId' => $this->data->CarrierId,
-                'ReasonCode' => TenderEnumRD::RISK_AREA,
+                'ReasonCode' => $this::TND_RISK_AREA,
                 'ReasonMessage' => 'Área de risco',
                 'TenderResponseStatus' => 'DECLINED',
             ],
@@ -164,7 +164,7 @@ class Tenders
                 'ShipmentId' => $this->data->ShipmentId,
                 'ShipperId' => $this->data->ShipperId,
                 'CarrierId' => $this->data->CarrierId,
-                'ReasonCode' => TenderEnumRD::FAILED_TO_GEOLOCATE_DESTINATION,
+                'ReasonCode' => $this::TND_FAILED_TO_GEOLOCATE_DESTINATION,
                 'ReasonMessage' => 'Falha ao geolocalizar destino',
                 'TenderResponseStatus' => 'DECLINED',
             ],

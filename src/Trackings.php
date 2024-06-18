@@ -10,7 +10,7 @@ use Google\Cloud\PubSub\MessageBuilder;
 
 class Trackings
 {
-    use Helpers;
+    use Helpers, MessageTypeRD, StopSeqRD, TrackingEnumRD;
 
     protected $pubsub;
 
@@ -70,9 +70,9 @@ class Trackings
         $messageData = [
             'MessageComments' => $deliveryManTracking,
             'MessageName' => 'Integrado',
-            'MessageType' => MessageTypeRD::INTEGRATED,
-            'StopSeq' => StopSeqRD::INTEGRATED,
-            'TrackingReasonCodeId' => TrackingEnumRD::INTEGRATED,
+            'MessageType' => $this::MT_INTEGRATED,
+            'StopSeq' => $this::STQ_INTEGRATED,
+            'TrackingReasonCodeId' => $this::TRK_INTEGRATED,
         ];
         $data = array_merge($this->baseTracking, $messageData);
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
@@ -83,9 +83,9 @@ class Trackings
         $messageData = [
             'MessageComments' => $deliveryPrice,
             'MessageName' => 'Preço da entrega',
-            'MessageType' => MessageTypeRD::QUOTATION,
-            'StopSeq' => StopSeqRD::QUOTATION,
-            'TrackingReasonCodeId' => TrackingEnumRD::QUOTATION,
+            'MessageType' => $this::MT_QUOTATION,
+            'StopSeq' => $this::STQ_QUOTATION,
+            'TrackingReasonCodeId' => $this::TRK_QUOTATION,
         ];
 
         $data = array_merge($this->baseTracking, $messageData);
@@ -97,9 +97,9 @@ class Trackings
         $messageData = [
             'MessageComments' => $expectedTime,
             'MessageName' => 'Em rota de coleta',
-            'MessageType' => MessageTypeRD::ON_PICKUP_ROUTE,
-            'StopSeq' => StopSeqRD::ON_PICKUP_ROUTE,
-            'TrackingReasonCodeId' => TrackingEnumRD::ON_PICKUP_ROUTE,
+            'MessageType' => $this::MT_ON_PICKUP_ROUTE,
+            'StopSeq' => $this::STQ_ON_PICKUP_ROUTE,
+            'TrackingReasonCodeId' => $this::TRK_ON_PICKUP_ROUTE,
         ];
 
         $data = array_merge($this->baseTracking, $messageData);
@@ -111,9 +111,9 @@ class Trackings
         $messageData = [
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
             'MessageName' => 'Chegada no ponto de coleta',
-            'MessageType' => MessageTypeRD::ARRIVAL_AT_PICKUP,
-            'StopSeq' => StopSeqRD::ARRIVAL_AT_PICKUP,
-            'TrackingReasonCodeId' => TrackingEnumRD::ARRIVAL_AT_PICKUP,
+            'MessageType' => $this::MT_ARRIVAL_AT_PICKUP,
+            'StopSeq' => $this::STQ_ARRIVAL_AT_PICKUP,
+            'TrackingReasonCodeId' => $this::TRK_ARRIVAL_AT_PICKUP,
         ];
 
         $data = array_merge($this->baseTracking, $messageData);
@@ -125,9 +125,9 @@ class Trackings
         $messageData = [
             'MessageComments' => $expectedTime,
             'MessageName' => 'Despachado',
-            'MessageType' => MessageTypeRD::DISPATCHED,
-            'StopSeq' => StopSeqRD::DISPATCHED,
-            'TrackingReasonCodeId' => TrackingEnumRD::DISPATCHED,
+            'MessageType' => $this::MT_DISPATCHED,
+            'StopSeq' => $this::STQ_DISPATCHED,
+            'TrackingReasonCodeId' => $this::TRK_DISPATCHED,
         ];
 
         $data = array_merge($this->baseTracking, $messageData);
@@ -139,9 +139,9 @@ class Trackings
         $messageData = [
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
             'MessageName' => 'Chegada no destino do cliente',
-            'MessageType' => MessageTypeRD::ARRIVAL_AT_DELIVERY,
-            'StopSeq' => StopSeqRD::ARRIVAL_AT_DELIVERY,
-            'TrackingReasonCodeId' => TrackingEnumRD::ARRIVAL_AT_DELIVERY,
+            'MessageType' => $this::MT_ARRIVAL_AT_DELIVERY,
+            'StopSeq' => $this::STQ_ARRIVAL_AT_DELIVERY,
+            'TrackingReasonCodeId' => $this::TRK_ARRIVAL_AT_DELIVERY,
         ];
 
         $data = array_merge($this->baseTracking, $messageData);
@@ -153,9 +153,9 @@ class Trackings
         $messageData = [
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
             'MessageName' => 'Entrega realizada com sucesso',
-            'MessageType' => MessageTypeRD::SUCCESSFUL_DELIVERY,
-            'StopSeq' => StopSeqRD::SUCCESSFUL_DELIVERY,
-            'TrackingReasonCodeId' => TrackingEnumRD::SUCCESSFUL_DELIVERY,
+            'MessageType' => $this::MT_SUCCESSFUL_DELIVERY,
+            'StopSeq' => $this::STQ_SUCCESSFUL_DELIVERY,
+            'TrackingReasonCodeId' => $this::TRK_SUCCESSFUL_DELIVERY,
         ];
 
         $data = array_merge($this->baseTracking, $messageData);
@@ -167,9 +167,9 @@ class Trackings
         $messageData = [
             'MessageComments' => $reasson,
             'MessageName' => 'Entrega cancelada - ' . $reasson,
-            'MessageType' => MessageTypeRD::CANCELED_DELIVERY,
-            'StopSeq' => StopSeqRD::CANCELED_DELIVERY,
-            'TrackingReasonCodeId' => TrackingEnumRD::CANCELED_DELIVERY,
+            'MessageType' => $this::MT_CANCELED_DELIVERY,
+            'StopSeq' => $this::STQ_CANCELED_DELIVERY,
+            'TrackingReasonCodeId' => $this::TRK_CANCELED_DELIVERY,
         ];
 
         $data = array_merge($this->baseTracking, $messageData);
@@ -181,9 +181,9 @@ class Trackings
         $messageData = [
             'MessageComments' => $reasson,
             'MessageName' => 'Pedido devolvido em loja - ' . $reasson,
-            'MessageType' => MessageTypeRD::RETURNED,
-            'StopSeq' => StopSeqRD::RETURNED,
-            'TrackingReasonCodeId' => TrackingEnumRD::RETURNED,
+            'MessageType' => $this::MT_RETURNED,
+            'StopSeq' => $this::STQ_RETURNED,
+            'TrackingReasonCodeId' => $this::TRK_RETURNED,
         ];
 
         $data = array_merge($this->baseTracking, $messageData);
@@ -195,9 +195,9 @@ class Trackings
         $messageData = [
             'MessageComments' => $reasson,
             'MessageName' => 'Pedido recusado - ' . $reasson,
-            'MessageType' => MessageTypeRD::REJECTED_BY_CARRIER,
-            'StopSeq' => StopSeqRD::REJECTED_BY_CARRIER,
-            'TrackingReasonCodeId' => TrackingEnumRD::REJECTED_BY_CARRIER,
+            'MessageType' => $this::MT_REJECTED_BY_CARRIER,
+            'StopSeq' => $this::STQ_REJECTED_BY_CARRIER,
+            'TrackingReasonCodeId' => $this::TRK_REJECTED_BY_CARRIER,
         ];
 
         $data = array_merge($this->baseTracking, $messageData);
