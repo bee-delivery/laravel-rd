@@ -43,4 +43,5 @@ trait MessageTypeRD
     public const MT_DELIVERER_NOT_FOUND = 'Other';
     public const MT_SEARCHING_FOR_DELIVERER = 'Other';
     public const MT_QUOTATION = 'Other';
+    public const MT_DELIVERYMAN_ABANDONED_THE_ORDER = 'Other';
 }
