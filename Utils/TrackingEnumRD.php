@@ -43,4 +43,5 @@ trait TrackingEnumRD
     public const TRK_DELIVERER_NOT_FOUND = '38';
     public const TRK_SEARCHING_FOR_DELIVERER = '39';
     public const TRK_QUOTATION = '40';
+    public const TRK_DELIVERYMAN_ABANDONED_THE_ORDER = '41';
 }

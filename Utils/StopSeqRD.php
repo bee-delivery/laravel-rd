@@ -43,4 +43,5 @@ trait StopSeqRD
     public const STQ_DELIVERER_NOT_FOUND = '1';
     public const STQ_SEARCHING_FOR_DELIVERER = '1';
     public const STQ_QUOTATION = '1';
+    public const STQ_DELIVERYMAN_ABANDONED_THE_ORDER = '1';
 }

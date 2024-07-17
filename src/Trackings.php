@@ -203,4 +203,18 @@ class Trackings
         $data = array_merge($this->baseTracking, $messageData);
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
+
+    public function deliverymanAbandonedTheOrder()
+    {
+        $messageData = [
+            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageName' => 'Entregador desistiu do pedido',
+            'MessageType' => $this::MT_DELIVERYMAN_ABANDONED_THE_ORDER,
+            'StopSeq' => $this::STQ_DELIVERYMAN_ABANDONED_THE_ORDER,
+            'TrackingReasonCodeId' => $this::TRK_DELIVERYMAN_ABANDONED_THE_ORDER,
+        ];
+
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
 }
