@@ -172,4 +172,27 @@ class Tenders
 
         return ['tender' => $this->tender($data), 'data' => $data];
     }
+
+    public function declinedOutOfServiceWindow()
+    {
+        $data = [
+            'Metadata' => [
+                'RouterMessageType' => 'CARRIER_TENDER_RESPONSE',
+                'ActionType' => 'TENDER_DECLINE',
+                'PartnerId' => config('rd.partner_id'),
+                'SenderRouterOrgId' => 'mxcassf11o:' . $this->data->CarrierId,
+                'PartnerAliasId' => $this->data->CarrierId,
+            ],
+            'TenderResponseDTO' => [
+                'ShipmentId' => $this->data->ShipmentId,
+                'ShipperId' => $this->data->ShipperId,
+                'CarrierId' => $this->data->CarrierId,
+                'ReasonCode' => $this::TND_OUT_OF_SERVICE_WINDOW,
+                'ReasonMessage' => 'Fora da janela de atendimento',
+                'TenderResponseStatus' => 'DECLINED',
+            ],
+        ];
+
+        return ['tender' => $this->tender($data), 'data' => $data];
+    }
 }
