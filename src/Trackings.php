@@ -217,4 +217,56 @@ class Trackings
         $data = array_merge($this->baseTracking, $messageData);
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
+
+    public function absentClient()
+    {
+        $messageData = [
+            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageName' => 'Cliente ausente',
+            'MessageType' => $this::MT_CLIENT_ABSENT,
+            'StopSeq' => $this::STQ_CLIENT_ABSENT,
+            'TrackingReasonCodeId' => $this::TRK_CLIENT_ABSENT,
+        ];
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
+
+    public function addressNotFound()
+    {
+        $messageData = [
+            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageName' => 'Endereço não encontrado',
+            'MessageType' => $this::MT_ADDRESS_NOT_FOUND,
+            'StopSeq' => $this::STQ_ADDRESS_NOT_FOUND,
+            'TrackingReasonCodeId' => $this::TRK_ADDRESS_NOT_FOUND,
+        ];
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
+
+    public function otherOccurrence($reasson)
+    {
+        $messageData = [
+            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageName' => $reasson,
+            'MessageType' => $this::MT_OTHERS,
+            'StopSeq' => $this::STQ_OTHERS,
+            'TrackingReasonCodeId' => $this::TRK_OTHER_OCCURRENCE,
+        ];
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
+
+    public function orderRefusedByClient()
+    {
+        $messageData = [
+            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageName' => 'Pedido recusado pelo cliente',
+            'MessageType' => $this::MT_ORDER_REFUSED_BY_CLIENT,
+            'StopSeq' => $this::STQ_ORDER_REFUSED_BY_CLIENT,
+            'TrackingReasonCodeId' => $this::TRK_ORDER_REFUSED_BY_CLIENT,
+        ];
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
 }
