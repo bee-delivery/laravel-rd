@@ -134,10 +134,10 @@ class Trackings
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
-    public function arrivalAtDelivery()
+    public function arrivalAtDelivery(string $messageComments = null)
     {
         $messageData = [
-            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageComments' => $messageComments === null ? now('UTC')->toDateTimeLocalString() : $messageComments,
             'MessageName' => 'Chegada no destino do cliente',
             'MessageType' => $this::MT_ARRIVAL_AT_DELIVERY,
             'StopSeq' => $this::STQ_ARRIVAL_AT_DELIVERY,
@@ -148,10 +148,10 @@ class Trackings
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
-    public function successulDelivery()
+    public function successulDelivery(string $messageComments = null)
     {
         $messageData = [
-            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageComments' => $messageComments === null ? now('UTC')->toDateTimeLocalString() : $messageComments,
             'MessageName' => 'Entrega realizada com sucesso',
             'MessageType' => $this::MT_SUCCESSFUL_DELIVERY,
             'StopSeq' => $this::STQ_SUCCESSFUL_DELIVERY,
