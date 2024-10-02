@@ -137,7 +137,7 @@ class Trackings
     public function arrivalAtDelivery(string $messageComments = null)
     {
         $messageData = [
-            'MessageComments' => $messageComments === null ? now('UTC')->toDateTimeLocalString() : $messageComments,
+            'MessageComments' => $messageComments === null ? now('UTC')->toDateTimeLocalString() : substr($messageComments, 0, 50),
             'MessageName' => 'Chegada no destino do cliente',
             'MessageType' => $this::MT_ARRIVAL_AT_DELIVERY,
             'StopSeq' => $this::STQ_ARRIVAL_AT_DELIVERY,
@@ -151,7 +151,7 @@ class Trackings
     public function successulDelivery(string $messageComments = null)
     {
         $messageData = [
-            'MessageComments' => $messageComments === null ? now('UTC')->toDateTimeLocalString() : $messageComments,
+            'MessageComments' => $messageComments === null ? now('UTC')->toDateTimeLocalString() : substr($messageComments, 0, 50),
             'MessageName' => 'Entrega realizada com sucesso',
             'MessageType' => $this::MT_SUCCESSFUL_DELIVERY,
             'StopSeq' => $this::STQ_SUCCESSFUL_DELIVERY,
@@ -165,8 +165,8 @@ class Trackings
     public function canceledDelivery($reasson)
     {
         $messageData = [
-            'MessageComments' => $reasson,
-            'MessageName' => 'Entrega cancelada - ' . $reasson,
+            'MessageComments' => substr($reasson, 0, 50),
+            'MessageName' => substr('Entrega cancelada - ' . $reasson, 0, 50),
             'MessageType' => $this::MT_CANCELED_DELIVERY,
             'StopSeq' => $this::STQ_CANCELED_DELIVERY,
             'TrackingReasonCodeId' => $this::TRK_CANCELED_DELIVERY,
@@ -179,8 +179,8 @@ class Trackings
     public function returned($reasson)
     {
         $messageData = [
-            'MessageComments' => $reasson,
-            'MessageName' => 'Pedido devolvido em loja - ' . $reasson,
+            'MessageComments' => substr($reasson, 0, 50),
+            'MessageName' => substr('Pedido devolvido em loja - ' . $reasson, 0, 50),
             'MessageType' => $this::MT_RETURNED,
             'StopSeq' => $this::STQ_RETURNED,
             'TrackingReasonCodeId' => $this::TRK_RETURNED,
@@ -193,8 +193,8 @@ class Trackings
     public function reject($reasson)
     {
         $messageData = [
-            'MessageComments' => $reasson,
-            'MessageName' => 'Pedido recusado - ' . $reasson,
+            'MessageComments' => substr($reasson, 0, 50),
+            'MessageName' => substr('Pedido recusado - ' . $reasson, 0, 50),
             'MessageType' => $this::MT_REJECTED_BY_CARRIER,
             'StopSeq' => $this::STQ_REJECTED_BY_CARRIER,
             'TrackingReasonCodeId' => $this::TRK_REJECTED_BY_CARRIER,
@@ -248,7 +248,7 @@ class Trackings
     {
         $messageData = [
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
-            'MessageName' => $reasson,
+            'MessageName' => substr($reasson, 0, 50),
             'MessageType' => $this::MT_OTHERS,
             'StopSeq' => $this::STQ_OTHERS,
             'TrackingReasonCodeId' => $this::TRK_OTHER_OCCURRENCE,
