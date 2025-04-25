@@ -269,4 +269,31 @@ class Trackings
         $data = array_merge($this->baseTracking, $messageData);
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
+
+    public function orderNotCollected(string $reasson)
+    {
+        $messageData = [
+            'MessageComments' => substr($reasson, 0, 50),
+            'MessageName' => substr('Pedido não coletado - ' . $reasson, 0, 50),
+            'MessageType' => $this::MT_NOT_COLLECTED,
+            'StopSeq' => $this::STQ_NOT_COLLECTED,
+            'TrackingReasonCodeId' => $this::TRK_NOT_COLLECTED,
+        ];
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
+
+    public function deliveryManNotFound()
+    {
+        $messageData = [
+            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageName' => 'Entregador não encontrado',
+            'MessageType' => $this::MT_DELIVERER_NOT_FOUND,
+            'StopSeq' => $this::STQ_DELIVERER_NOT_FOUND,
+            'TrackingReasonCodeId' => $this::TRK_DELIVERER_NOT_FOUND,
+        ];
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
+    
 }
