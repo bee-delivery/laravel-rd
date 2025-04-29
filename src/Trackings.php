@@ -295,5 +295,17 @@ class Trackings
         $data = array_merge($this->baseTracking, $messageData);
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
-    
+
+    public function establishmentClosed()
+    {
+        $messageData = [
+            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageName' => 'Estabelecimento fechado',
+            'MessageType' => $this::MT_ESTABLISHMENT_CLOSED,
+            'StopSeq' => $this::STQ_ESTABLISHMENT_CLOSED,
+            'TrackingReasonCodeId' => $this::TRK_ESTABLISHMENT_CLOSED,
+        ];
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
 }
