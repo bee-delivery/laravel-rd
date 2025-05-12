@@ -7,6 +7,7 @@ use BeeDelivery\RD\Utils\MessageTypeRD;
 use BeeDelivery\RD\Utils\StopSeqRD;
 use BeeDelivery\RD\Utils\TrackingEnumRD;
 use Google\Cloud\PubSub\MessageBuilder;
+use Illuminate\Support\Facades\Log;
 
 class Trackings
 {
@@ -21,24 +22,60 @@ class Trackings
      *
      * @return void
      */
-    public function __construct($data)
+    public function __construct($data, bool $setAddicionalMinute = false)
     {
         $this->pubsub = $this->pubSubGoogle();
-        $this->baseTracking = $this->prepareBaseTracking($data);
+        $this->baseTracking = $this->prepareBaseTracking($data, $setAddicionalMinute);
     }
 
-    private function tracking($messageData)
+    private function tracking($messageData, $retries = 3)
     {
-        try {
-            $topic = $this->pubsub->topic(config('rd.inbound_tracking_response'));
-            return $topic->publish((new MessageBuilder)->setData(json_encode($messageData))->build());
-        } catch (\Exception $exception) {
-            throw new \Exception($exception->getMessage());
+        $attempt = 0;
+        $lastException = null;
+
+        while ($attempt < $retries) {
+            try {
+                $topic = $this->pubsub->topic(config('rd.inbound_tracking_response'));
+                return $topic->publish((new MessageBuilder)->setData(json_encode($messageData))->build());
+            } catch (\Exception $exception) {
+                $lastException = $exception;
+                $attempt++;
+
+                // Error log
+                Log::error('Error publishing tracking', [
+                    'shipment_id' => $messageData['ShipmentId'] ?? 'N/A',
+                    'message_type' => $messageData['MessageType'] ?? 'N/A',
+                    'error' => $exception->getMessage(),
+                    'attempt' => $attempt,
+                    'timestamp' => now('UTC')->toDateTimeLocalString()
+                ]);
+
+                if ($attempt < $retries) {
+                    // Exponential backoff between attempts
+                    sleep(pow(2, $attempt));
+                }
+            }
         }
+
+        Log::critical('Critical failure publishing tracking after all attempts', [
+            'shipment_id' => $messageData['ShipmentId'] ?? 'N/A',
+            'message_type' => $messageData['MessageType'] ?? 'N/A',
+            'error' => $lastException ? $lastException->getMessage() : 'Unknown error',
+            'timestamp' => now('UTC')->toDateTimeLocalString()
+        ]);
+
+        throw new \Exception(
+            "Failed to publish tracking after {$retries} attempts. Last error: " .
+                ($lastException ? $lastException->getMessage() : 'Unknown error')
+        );
     }
 
-    private function prepareBaseTracking($data)
+    private function prepareBaseTracking($data, bool $setAddicionalMinute = false)
     {
+        $timestamp = $setAddicionalMinute 
+            ? now('UTC')->addMinute()->format('Y-m-d\TH:i:00')
+            : now('UTC')->format('Y-m-d\TH:i:00');
+
         return [
             'Address1' => $data->Stop[1]->FacilityAddress->Address1 ?? null,
             'Address2' => $data->Stop[1]->FacilityAddress->Address2 ?? null,
@@ -48,14 +85,14 @@ class Trackings
             'Latitude' => $data->Stop[1]->Latitude ?? null,
             'Longitude' => $data->Stop[1]->Longitude ?? null,
             'OrgId' => 'RD-RaiaDrogasil-SA',
-            'PostalCode' => $data->Stop[1]->FacilityAddress->PostalCode,
-            'ReceivedTimeStamp' => now('UTC')->toDateTimeLocalString(),
+            'PostalCode' => $data->Stop[1]->FacilityAddress->PostalCode ?? null,
+            'ReceivedTimeStamp' => $timestamp,
             'ReceivedTimeZone' => 'Brazil/East',
             'ShipmentId' => $data->ShipmentId,
             'SourceType' => 'API',
             'StateId' => $data->Stop[1]->FacilityAddress->State ?? null,
             'TimeZone' => 'Brazil/East',
-            'TrackingEventTimeStamp' => now('UTC')->toDateTimeLocalString(),
+            'TrackingEventTimeStamp' => $timestamp,
             'TrackingReference' => $data->ShipmentId,
             'TrackingType' => 'Shipment',
             'TransportationOrderId' => $data->ShipmentId,
@@ -134,7 +171,7 @@ class Trackings
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
-    public function arrivalAtDelivery(string $messageComments = null)
+    public function arrivalAtDelivery(?string $messageComments = null)
     {
         $messageData = [
             'MessageComments' => $messageComments === null ? now('UTC')->toDateTimeLocalString() : substr($messageComments, 0, 50),
@@ -148,10 +185,10 @@ class Trackings
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
-    public function successulDelivery(string $messageComments = null)
+    public function successulDelivery(?string $messageComments = null)
     {
         $messageData = [
-            'MessageComments' => $messageComments === null ? now('UTC')->toDateTimeLocalString() : substr($messageComments, 0, 50),
+            'MessageComments' => $messageComments === null ? now('UTC')->addMinute()->format('Y-m-d\TH:i:00') : substr($messageComments, 0, 50),
             'MessageName' => 'Entrega realizada com sucesso',
             'MessageType' => $this::MT_SUCCESSFUL_DELIVERY,
             'StopSeq' => $this::STQ_SUCCESSFUL_DELIVERY,

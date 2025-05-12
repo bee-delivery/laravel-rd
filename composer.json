@@ -18,7 +18,7 @@
     "require": {
         "php": "^8.1",
         "aws/aws-sdk-php-laravel": "^3.8",
-        "google/cloud-pubsub": "^1.41"
+        "google/cloud-pubsub": "^2.8"
     },
     "require-dev": {
         "orchestra/testbench": "^6.0",
