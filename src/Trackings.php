@@ -72,9 +72,9 @@ class Trackings
 
     private function prepareBaseTracking($data, bool $setAddicionalMinute = false)
     {
-        $timestamp = $setAddicionalMinute 
+        $timestamp = $setAddicionalMinute
             ? now('UTC')->addMinute()->format('Y-m-d\TH:i:00')
-            : now('UTC')->format('Y-m-d\TH:i:00');
+            : now('UTC')->toDateTimeLocalString();
 
         return [
             'Address1' => $data->Stop[1]->FacilityAddress->Address1 ?? null,
