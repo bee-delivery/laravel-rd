@@ -86,8 +86,6 @@ class Trackings
             'Longitude' => $data->Stop[1]->Longitude ?? null,
             'OrgId' => 'RD-RaiaDrogasil-SA',
             'PostalCode' => $data->Stop[1]->FacilityAddress->PostalCode ?? null,
-            'ReceivedTimeStamp' => $timestamp,
-            'ReceivedTimeZone' => 'Brazil/East',
             'ShipmentId' => $data->ShipmentId,
             'SourceType' => 'API',
             'StateId' => $data->Stop[1]->FacilityAddress->State ?? null,
