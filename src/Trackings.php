@@ -183,6 +183,20 @@ class Trackings
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
+    public function arrivalAtDeliveryWithDelayOnTracking(?string $messageComments = null)
+    {
+        $messageData = [
+            'MessageComments' => $messageComments === null ? now('UTC')->addMinutes(-1)->toDateTimeLocalString() : substr($messageComments, 0, 50),
+            'MessageName' => 'Chegada no destino do cliente',
+            'MessageType' => $this::MT_ARRIVAL_AT_DELIVERY,
+            'StopSeq' => $this::STQ_ARRIVAL_AT_DELIVERY,
+            'TrackingReasonCodeId' => $this::TRK_ARRIVAL_AT_DELIVERY,
+        ];
+
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
+
     public function successulDelivery(?string $messageComments = null)
     {
         $messageData = [
