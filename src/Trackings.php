@@ -22,10 +22,10 @@ class Trackings
      *
      * @return void
      */
-    public function __construct($data, bool $setAddicionalMinute = false)
+    public function __construct($data, bool $setAddicionalMinute = false, $removeAddicionalMinute = false)
     {
         $this->pubsub = $this->pubSubGoogle();
-        $this->baseTracking = $this->prepareBaseTracking($data, $setAddicionalMinute);
+        $this->baseTracking = $this->prepareBaseTracking($data, $setAddicionalMinute, $removeAddicionalMinute);
     }
 
     private function tracking($messageData, $retries = 3)
@@ -70,11 +70,9 @@ class Trackings
         );
     }
 
-    private function prepareBaseTracking($data, bool $setAddicionalMinute = false)
+    private function prepareBaseTracking($data, bool $setAddicionalMinute = false, bool $removeAddicionalMinute = false)
     {
-        $timestamp = $setAddicionalMinute
-            ? now('UTC')->addMinute()->format('Y-m-d\TH:i:00')
-            : now('UTC')->toDateTimeLocalString();
+        $timestamp = $setAddicionalMinute ? now('UTC')->addMinute()->format('Y-m-d\TH:i:00') : ($removeAddicionalMinute ? now('UTC')->addMinutes(-1)->format('Y-m-d\TH:i:00') : now('UTC')->toDateTimeLocalString());
 
         return [
             'Address1' => $data->Stop[1]->FacilityAddress->Address1 ?? null,
