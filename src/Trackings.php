@@ -73,20 +73,20 @@ class Trackings
     private function prepareBaseTracking($data, bool $setAddicionalMinute = false, bool $removeAddicionalMinute = false)
     {
         $timestamp = $setAddicionalMinute ? now('UTC')->addMinute()->format('Y-m-d\TH:i:00') : ($removeAddicionalMinute ? now('UTC')->addMinutes(-1)->format('Y-m-d\TH:i:00') : now('UTC')->toDateTimeLocalString());
-
+        $deliveryAddress = $this->getDeliveryAddress($data);
         return [
-            'Address1' => $data->Stop[1]->FacilityAddress->Address1 ?? null,
-            'Address2' => $data->Stop[1]->FacilityAddress->Address2 ?? null,
+            'Address1' => $deliveryAddress->FacilityAddress->Address1 ?? null,
+            'Address2' => $deliveryAddress->FacilityAddress->Address2 ?? null,
             'CarrierId' => 'BEE',
-            'City' => $data->Stop[1]->FacilityAddress->City ?? null,
-            'CountryId' => $data->Stop[1]->FacilityAddress->Country ?? null,
-            'Latitude' => $data->Stop[1]->Latitude ?? null,
-            'Longitude' => $data->Stop[1]->Longitude ?? null,
+            'City' => $deliveryAddress->FacilityAddress->City ?? null,
+            'CountryId' => $deliveryAddress->FacilityAddress->Country ?? null,
+            'Latitude' => $deliveryAddress->Latitude ?? null,
+            'Longitude' => $deliveryAddress->Longitude ?? null,
             'OrgId' => 'RD-RaiaDrogasil-SA',
-            'PostalCode' => $data->Stop[1]->FacilityAddress->PostalCode ?? null,
+            'PostalCode' => $deliveryAddress->FacilityAddress->PostalCode ?? null,
             'ShipmentId' => $data->ShipmentId,
             'SourceType' => 'API',
-            'StateId' => $data->Stop[1]->FacilityAddress->State ?? null,
+            'StateId' => $deliveryAddress->FacilityAddress->State ?? null,
             'TimeZone' => 'Brazil/East',
             'TrackingEventTimeStamp' => $timestamp,
             'TrackingReference' => $data->ShipmentId,
@@ -354,5 +354,17 @@ class Trackings
         ];
         $data = array_merge($this->baseTracking, $messageData);
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
+
+    private function getDeliveryAddress($data)
+    {
+        if ($data->Stop[0]->StopSequence == 2) {
+            return $data->Stop[0];
+        }  
+        if ($data->Stop[1]->StopSequence == 2) {
+            return $data->Stop[1];
+        }
+
+        throw new \Exception('Address not found. Please check the shipment data.');
     }
 }
