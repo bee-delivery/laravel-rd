@@ -91,14 +91,12 @@ class PullFromPubSubRD extends Command
 
     private function putOrderOnRedis($orderId, $data, $tenderStatus)
     {
-        $dataRedis = $tenderStatus == 'Recalled' ? $data : ['TenderStatus' => $tenderStatus, 'address' => $data->Stop[1]];
-        Redis::hset(config('rd.redis_key_shipment') . $orderId, now()->format('d/m/Y H:i:s'), json_encode($dataRedis));
-        Redis::expire(config('rd.redis_key_shipment') . $orderId, 864000); // 10 dias
         Log::channel(config('rd.log_pull_tms'))->info(json_encode([
             'msg' => 'PEDIDO RECEBIDO: ' . $orderId,
             'hora' => now()->format('d/m/Y H:i:s'),
             'class' => 'PullFromPubSubRD',
             'status' => $tenderStatus,
+            'data' => json_encode($data)
         ]));
     }
 
