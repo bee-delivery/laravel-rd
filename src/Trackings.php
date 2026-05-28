@@ -102,7 +102,7 @@ class Trackings
     {
         $messageData = [
             'MessageComments' => $deliveryManTracking,
-            'MessageName' => 'Integrado',
+            'MessageName' => 'Integrado na Transportadora',
             'MessageType' => $this::MT_INTEGRATED,
             'StopSeq' => $this::STQ_INTEGRATED,
             'TrackingReasonCodeId' => $this::TRK_INTEGRATED,
@@ -143,7 +143,7 @@ class Trackings
     {
         $messageData = [
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
-            'MessageName' => 'Chegada no ponto de coleta',
+            'MessageName' => 'Chegada na Coleta',
             'MessageType' => $this::MT_ARRIVAL_AT_PICKUP,
             'StopSeq' => $this::STQ_ARRIVAL_AT_PICKUP,
             'TrackingReasonCodeId' => $this::TRK_ARRIVAL_AT_PICKUP,
@@ -171,7 +171,7 @@ class Trackings
     {
         $messageData = [
             'MessageComments' => $messageComments === null ? now('UTC')->toDateTimeLocalString() : substr($messageComments, 0, 50),
-            'MessageName' => 'Chegada no destino do cliente',
+            'MessageName' => 'Chegada na Entrega',
             'MessageType' => $this::MT_ARRIVAL_AT_DELIVERY,
             'StopSeq' => $this::STQ_ARRIVAL_AT_DELIVERY,
             'TrackingReasonCodeId' => $this::TRK_ARRIVAL_AT_DELIVERY,
@@ -185,7 +185,7 @@ class Trackings
     {
         $messageData = [
             'MessageComments' => $messageComments === null ? now('UTC')->addMinutes(-1)->toDateTimeLocalString() : substr($messageComments, 0, 50),
-            'MessageName' => 'Chegada no destino do cliente',
+            'MessageName' => 'Chegada na Entrega',
             'MessageType' => $this::MT_ARRIVAL_AT_DELIVERY,
             'StopSeq' => $this::STQ_ARRIVAL_AT_DELIVERY,
             'TrackingReasonCodeId' => $this::TRK_ARRIVAL_AT_DELIVERY,
@@ -199,7 +199,7 @@ class Trackings
     {
         $messageData = [
             'MessageComments' => $messageComments === null ? now('UTC')->addMinute()->format('Y-m-d\TH:i:00') : substr($messageComments, 0, 50),
-            'MessageName' => 'Entrega realizada com sucesso',
+            'MessageName' => 'Entregue',
             'MessageType' => $this::MT_SUCCESSFUL_DELIVERY,
             'StopSeq' => $this::STQ_SUCCESSFUL_DELIVERY,
             'TrackingReasonCodeId' => $this::TRK_SUCCESSFUL_DELIVERY,
@@ -213,7 +213,7 @@ class Trackings
     {
         $messageData = [
             'MessageComments' => substr($reasson, 0, 50),
-            'MessageName' => substr('Entrega cancelada - ' . $reasson, 0, 50),
+            'MessageName' => 'Entrega Cancelada',
             'MessageType' => $this::MT_CANCELED_DELIVERY,
             'StopSeq' => $this::STQ_CANCELED_DELIVERY,
             'TrackingReasonCodeId' => $this::TRK_CANCELED_DELIVERY,
@@ -227,7 +227,7 @@ class Trackings
     {
         $messageData = [
             'MessageComments' => substr($reasson, 0, 50),
-            'MessageName' => substr('Pedido devolvido em loja - ' . $reasson, 0, 50),
+            'MessageName' => 'Devolvido para Farmácia',
             'MessageType' => $this::MT_RETURNED,
             'StopSeq' => $this::STQ_RETURNED,
             'TrackingReasonCodeId' => $this::TRK_RETURNED,
@@ -255,7 +255,7 @@ class Trackings
     {
         $messageData = [
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
-            'MessageName' => 'Entregador desistiu do pedido',
+            'MessageName' => 'Entregador Desistiu',
             'MessageType' => $this::MT_DELIVERYMAN_ABANDONED_THE_ORDER,
             'StopSeq' => $this::STQ_DELIVERYMAN_ABANDONED_THE_ORDER,
             'TrackingReasonCodeId' => $this::TRK_DELIVERYMAN_ABANDONED_THE_ORDER,
@@ -282,7 +282,7 @@ class Trackings
     {
         $messageData = [
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
-            'MessageName' => 'Endereço não encontrado',
+            'MessageName' => 'Endereço Não Localizado',
             'MessageType' => $this::MT_ADDRESS_NOT_FOUND,
             'StopSeq' => $this::STQ_ADDRESS_NOT_FOUND,
             'TrackingReasonCodeId' => $this::TRK_ADDRESS_NOT_FOUND,
@@ -308,7 +308,7 @@ class Trackings
     {
         $messageData = [
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
-            'MessageName' => 'Pedido recusado pelo cliente',
+            'MessageName' => 'Recusa do Cliente',
             'MessageType' => $this::MT_ORDER_REFUSED_BY_CLIENT,
             'StopSeq' => $this::STQ_ORDER_REFUSED_BY_CLIENT,
             'TrackingReasonCodeId' => $this::TRK_ORDER_REFUSED_BY_CLIENT,
@@ -321,7 +321,7 @@ class Trackings
     {
         $messageData = [
             'MessageComments' => substr($reasson, 0, 50),
-            'MessageName' => substr('Pedido não coletado - ' . $reasson, 0, 50),
+            'MessageName' => 'Não Coletado',
             'MessageType' => $this::MT_NOT_COLLECTED,
             'StopSeq' => $this::STQ_NOT_COLLECTED,
             'TrackingReasonCodeId' => $this::TRK_NOT_COLLECTED,
@@ -334,7 +334,7 @@ class Trackings
     {
         $messageData = [
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
-            'MessageName' => 'Entregador não encontrado',
+            'MessageName' => 'Entregador não localizado',
             'MessageType' => $this::MT_DELIVERER_NOT_FOUND,
             'StopSeq' => $this::STQ_DELIVERER_NOT_FOUND,
             'TrackingReasonCodeId' => $this::TRK_DELIVERER_NOT_FOUND,
@@ -352,6 +352,12 @@ class Trackings
             'StopSeq' => $this::STQ_ESTABLISHMENT_CLOSED,
             'TrackingReasonCodeId' => $this::TRK_ESTABLISHMENT_CLOSED,
         ];
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
+
+    public function sendCustomTracking(array $messageData)
+    {
         $data = array_merge($this->baseTracking, $messageData);
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
