@@ -17,6 +17,8 @@ class Trackings
 
     protected $baseTracking;
 
+    private bool $arrivalAtPickupPublished = false;
+
     /*
      * Create a new Connection instance.
      *
@@ -68,6 +70,23 @@ class Trackings
             "Failed to publish tracking after {$retries} attempts. Last error: " .
                 ($lastException ? $lastException->getMessage() : 'Unknown error')
         );
+    }
+
+    private function publishTracking(array $messageData): array
+    {
+        $data = array_merge($this->baseTracking, $messageData);
+
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
+
+    private function publishTrackingAndStartReturn(array $messageData): array
+    {
+        $response = $this->publishTracking($messageData);
+
+        // Todo insucesso que gera devolução deve publicar "Em rota de devolução" (32) imediatamente após
+        $this->onTheReturnRoute();
+
+        return $response;
     }
 
     private function prepareBaseTracking($data, bool $setAddicionalMinute = false, bool $removeAddicionalMinute = false)
@@ -141,16 +160,38 @@ class Trackings
 
     public function arrivalAtPickup()
     {
-        $messageData = [
+        $response = $this->publishTracking([
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
             'MessageName' => 'Chegada na Coleta',
             'MessageType' => $this::MT_ARRIVAL_AT_PICKUP,
             'StopSeq' => $this::STQ_ARRIVAL_AT_PICKUP,
             'TrackingReasonCodeId' => $this::TRK_ARRIVAL_AT_PICKUP,
-        ];
+        ]);
 
-        $data = array_merge($this->baseTracking, $messageData);
-        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+        $this->arrivalAtPickupPublished = true;
+
+        // Coletado pela transportadora (25) é obrigatório imediatamente após a chegada na coleta (28)
+        $this->collectedByTheCarrier();
+
+        return $response;
+    }
+
+    // Coletado pela transportadora (25) - nunca pode ser publicado antes da chegada na coleta (28)
+    public function collectedByTheCarrier()
+    {
+        if (!$this->arrivalAtPickupPublished) {
+            throw new \LogicException(
+                'Tracking 25 (Coletado pela transportadora) só pode ser publicado após o tracking 28 (Chegada na coleta). Utilize arrivalAtPickup().'
+            );
+        }
+
+        return $this->publishTracking([
+            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageName' => 'Coletado pela transportadora',
+            'MessageType' => $this::MT_COLLECTED_BY_THE_CARRIER,
+            'StopSeq' => $this::STQ_COLLECTED_BY_THE_CARRIER,
+            'TrackingReasonCodeId' => $this::TRK_ORDER_PICKUP,
+        ]);
     }
 
     public function dispatched($expectedTime)
@@ -267,54 +308,58 @@ class Trackings
 
     public function absentClient()
     {
-        $messageData = [
+        return $this->publishTrackingAndStartReturn([
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
             'MessageName' => 'Cliente ausente',
             'MessageType' => $this::MT_CLIENT_ABSENT,
             'StopSeq' => $this::STQ_CLIENT_ABSENT,
             'TrackingReasonCodeId' => $this::TRK_CLIENT_ABSENT,
-        ];
-        $data = array_merge($this->baseTracking, $messageData);
-        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+        ]);
     }
 
     public function addressNotFound()
     {
-        $messageData = [
+        return $this->publishTrackingAndStartReturn([
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
             'MessageName' => 'Endereço Não Localizado',
             'MessageType' => $this::MT_ADDRESS_NOT_FOUND,
             'StopSeq' => $this::STQ_ADDRESS_NOT_FOUND,
             'TrackingReasonCodeId' => $this::TRK_ADDRESS_NOT_FOUND,
-        ];
-        $data = array_merge($this->baseTracking, $messageData);
-        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+        ]);
     }
 
     public function otherOccurrence($reasson)
     {
-        $messageData = [
+        return $this->publishTrackingAndStartReturn([
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
             'MessageName' => substr($reasson, 0, 50),
             'MessageType' => $this::MT_OTHERS,
             'StopSeq' => $this::STQ_OTHERS,
             'TrackingReasonCodeId' => $this::TRK_OTHER_OCCURRENCE,
-        ];
-        $data = array_merge($this->baseTracking, $messageData);
-        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+        ]);
     }
 
     public function orderRefusedByClient()
     {
-        $messageData = [
+        return $this->publishTrackingAndStartReturn([
             'MessageComments' => now('UTC')->toDateTimeLocalString(),
             'MessageName' => 'Recusa do Cliente',
             'MessageType' => $this::MT_ORDER_REFUSED_BY_CLIENT,
             'StopSeq' => $this::STQ_ORDER_REFUSED_BY_CLIENT,
             'TrackingReasonCodeId' => $this::TRK_ORDER_REFUSED_BY_CLIENT,
-        ];
-        $data = array_merge($this->baseTracking, $messageData);
-        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+        ]);
+    }
+
+    // Em rota de devolução (32) - disparado automaticamente após todo insucesso que gera devolução
+    public function onTheReturnRoute()
+    {
+        return $this->publishTracking([
+            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageName' => 'Em rota de devolução',
+            'MessageType' => $this::MT_IN_RETURN_PROCESS,
+            'StopSeq' => $this::STQ_IN_RETURN_PROCESS,
+            'TrackingReasonCodeId' => $this::TRK_IN_RETURN_PROCESS,
+        ]);
     }
 
     public function orderNotCollected(string $reasson)
