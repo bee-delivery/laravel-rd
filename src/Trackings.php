@@ -195,10 +195,12 @@ class Trackings
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
+    // MessageComments chega pronto do chamador (observação + indicador de pincode, doc RD seção 10)
+    // e não pode ser truncado aqui — a truncagem da observação é responsabilidade de quem monta o valor
     public function successulDelivery(?string $messageComments = null)
     {
         $messageData = [
-            'MessageComments' => $messageComments === null ? now('UTC')->addMinute()->format('Y-m-d\TH:i:00') : substr($messageComments, 0, 50),
+            'MessageComments' => $messageComments === null ? now('UTC')->addMinute()->format('Y-m-d\TH:i:00') : $messageComments,
             'MessageName' => 'Entregue',
             'MessageType' => $this::MT_SUCCESSFUL_DELIVERY,
             'StopSeq' => $this::STQ_SUCCESSFUL_DELIVERY,
@@ -223,10 +225,12 @@ class Trackings
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
+    // MessageComments chega pronto do chamador (observação + indicador de pincode, doc RD seção 10)
+    // e não pode ser truncado aqui — a truncagem da observação é responsabilidade de quem monta o valor
     public function returned($reasson)
     {
         $messageData = [
-            'MessageComments' => substr($reasson, 0, 50),
+            'MessageComments' => $reasson,
             'MessageName' => 'Devolvido para Farmácia',
             'MessageType' => $this::MT_RETURNED,
             'StopSeq' => $this::STQ_RETURNED,
