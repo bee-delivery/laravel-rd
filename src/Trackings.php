@@ -153,6 +153,20 @@ class Trackings
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
     }
 
+    public function collectedByTheCarrier()
+    {
+        $messageData = [
+            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageName' => 'Coletado pela transportadora',
+            'MessageType' => $this::MT_COLLECTED_BY_THE_CARRIER,
+            'StopSeq' => $this::STQ_COLLECTED_BY_THE_CARRIER,
+            'TrackingReasonCodeId' => $this::TRK_ORDER_PICKUP,
+        ];
+
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
+
     public function dispatched($expectedTime)
     {
         $messageData = [
@@ -312,6 +326,19 @@ class Trackings
             'MessageType' => $this::MT_ORDER_REFUSED_BY_CLIENT,
             'StopSeq' => $this::STQ_ORDER_REFUSED_BY_CLIENT,
             'TrackingReasonCodeId' => $this::TRK_ORDER_REFUSED_BY_CLIENT,
+        ];
+        $data = array_merge($this->baseTracking, $messageData);
+        return ['tracinkg' => $this->tracking($data), 'data' => $data];
+    }
+
+    public function onTheReturnRoute()
+    {
+        $messageData = [
+            'MessageComments' => now('UTC')->toDateTimeLocalString(),
+            'MessageName' => 'Em rota de devolução',
+            'MessageType' => $this::MT_IN_RETURN_PROCESS,
+            'StopSeq' => $this::STQ_IN_RETURN_PROCESS,
+            'TrackingReasonCodeId' => $this::TRK_IN_RETURN_PROCESS,
         ];
         $data = array_merge($this->baseTracking, $messageData);
         return ['tracinkg' => $this->tracking($data), 'data' => $data];
